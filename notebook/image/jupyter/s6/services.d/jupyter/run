@@ -11,4 +11,5 @@ exec /home/${NB_USER}/.asdf/shims/jupyter lab \
     --ServerApp.allow_origin="*" \
     --ServerApp.base_url="${NB_PREFIX}" \
     --ServerApp.terminado_settings='shell_command=["/bin/zsh"]' \
+    --ServerApp.iopub_data_rate_limit=10000000000 \
     --ServerApp.authenticate_prometheus=False
