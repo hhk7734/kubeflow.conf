@@ -13,7 +13,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=${CODESER
     && chown -R ${NB_USER}:users ${HOME}
 
 # s6 - copy scripts
-COPY --chown=${NB_USER}:users s6/ /etc
+COPY --chown=${NB_USER}:users --chmod=755 s6/ /etc
 
 # s6 - 01-copy-tmp-home
 RUN mkdir -p /tmp_home \

@@ -2,8 +2,8 @@ FROM ubuntu:20.04
 
 ARG NB_USER=jovyan
 ARG NB_PASSWD=jovyan
-ARG S6_ARCH="amd64"
-ARG S6_VERSION=v2.2.0.3
+ARG S6_OVERLAY_ARCH="x86_64"
+ARG S6_OVERLAY_VERSION=3.1.5.0
 ARG FZF_VERSION=0.42.0
 ARG ASDF_VERSION=v0.12.0
 ARG PYTHON_VERSION=3.10.13
@@ -17,14 +17,13 @@ ENV HOME /home/$NB_USER
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -yq update \
     && apt-get -yq install --no-install-recommends \
-    apt-transport-https \
-    zsh \
-    bzip2 \
+    xz-utils \
     ca-certificates \
+    zsh \
+    apt-transport-https \
+    bzip2 \
     curl \
     git \
-    gnupg \
-    gnupg2 \
     locales \
     lsb-release \
     software-properties-common \
@@ -36,28 +35,26 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     sudo \
     build-essential libssl-dev zlib1g-dev \
     libbz2-dev libreadline-dev libsqlite3-dev \
-    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
+    libncursesw5-dev tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 SHELL ["/bin/zsh", "-c"]
 
 # S6
-RUN export GNUPGHOME=/tmp/ \
-    && curl -sL "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer" -o /tmp/s6-overlay-${S6_VERSION}-installer \
-    && curl -sL "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer.sig" -o /tmp/s6-overlay-${S6_VERSION}-installer.sig \
-    && gpg --keyserver keys.gnupg.net --keyserver pgp.surfnet.nl --recv-keys 6101B2783B2FD161 \
-    && gpg -q --verify /tmp/s6-overlay-${S6_VERSION}-installer.sig /tmp/s6-overlay-${S6_VERSION}-installer \
-    && chmod +x /tmp/s6-overlay-${S6_VERSION}-installer \
-    && /tmp/s6-overlay-${S6_VERSION}-installer / \
-    && rm /tmp/s6-overlay-${S6_VERSION}-installer.sig /tmp/s6-overlay-${S6_VERSION}-installer
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
+    && tar -C / -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz \
+    && rm /tmp/s6-overlay-noarch.tar.xz \
+    && rm /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
 
 # USER
 RUN useradd -M -s /bin/zsh -N -G sudo -u ${NB_UID} -p $(openssl passwd -1 $NB_PASSWD) ${NB_USER} \
     && mkdir -p ${HOME} \
     && chown -R ${NB_USER}:users ${HOME} \
     && chown -R ${NB_USER}:users /usr/local/bin \
-    && chown -R ${NB_USER}:users /etc/s6
+    && chown -R ${NB_USER}:users /etc/s6-overlay
 
 # LOCALE
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \

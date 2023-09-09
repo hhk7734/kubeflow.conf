@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv zsh
+#!/command/with-contenv zsh
 cd "${HOME}"
 exec /home/${NB_USER}/.asdf/shims/jupyter lab \
     --notebook-dir="${HOME}" \

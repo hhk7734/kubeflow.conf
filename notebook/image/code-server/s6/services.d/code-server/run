@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv zsh
+#!/command/with-contenv zsh
 exec /usr/bin/code-server \
     --bind-addr 0.0.0.0:8888 \
     --disable-telemetry \

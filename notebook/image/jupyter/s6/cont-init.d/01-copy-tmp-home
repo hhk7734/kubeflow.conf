@@ -1,2 +1,2 @@
-#!/usr/bin/with-contenv zsh
+#!/command/with-contenv zsh
 cp -r -n /tmp_home/* /home/
