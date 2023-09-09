@@ -1,5 +1,3 @@
-ZSH_DISABLE_COMPFIX="true"
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -46,4 +44,5 @@ if is_installed kubectl; then
   complete -F __start_kubectl k
 fi
 
+compaudit | xargs -r chmod g-w
 autoload -Uz compinit && compinit
