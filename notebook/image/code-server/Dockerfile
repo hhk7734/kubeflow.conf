@@ -1,11 +1,10 @@
 FROM localhost/base
-USER root
 
 ARG CODESERVER_VERSION=v4.3.0
 
-SHELL ["/bin/zsh", "-c"]
+USER root
 
-RUN ls -al $HOME
+SHELL ["/bin/zsh", "-c"]
 
 # code-server
 RUN curl -sL "https://github.com/cdr/code-server/releases/download/${CODESERVER_VERSION}/code-server_${CODESERVER_VERSION/v/}_amd64.deb" -o /tmp/code-server.deb \

@@ -1,8 +1,13 @@
 FROM ubuntu:20.04
 
-ARG NB_USER=hhk7734
+ARG NB_USER=jovyan
+ARG NB_PASSWD=jovyan
+ARG S6_ARCH="amd64"
+ARG S6_VERSION=v2.2.0.3
+ARG FZF_VERSION=0.42.0
+ARG ASDF_VERSION=v0.12.0
+
 ENV NB_USER $NB_USER
-ARG NB_PASSWD=hhk7734
 ENV NB_PASSWD $NB_PASSWD
 ENV NB_UID 1000
 ENV NB_PREFIX /
@@ -28,15 +33,15 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     wget \
     zip \
     sudo \
+    build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 SHELL ["/bin/zsh", "-c"]
 
 # S6
-ARG S6_ARCH="amd64"
-ARG S6_VERSION=v2.2.0.3
-
 RUN export GNUPGHOME=/tmp/ \
     && curl -sL "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer" -o /tmp/s6-overlay-${S6_VERSION}-installer \
     && curl -sL "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer.sig" -o /tmp/s6-overlay-${S6_VERSION}-installer.sig \
@@ -78,12 +83,8 @@ RUN git clone https://github.com/zsh-users/zsh-completions.git \
 RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
     ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
-ARG FZF_VERSION=0.42.0
-
 RUN git clone --depth 1 --branch ${FZF_VERSION} https://github.com/junegunn/fzf.git ~/.fzf \
     && ~/.fzf/install --key-bindings --completion --no-update-rc
 
 # ASDF
-ARG ASDF_VERSION=v0.12.0
-
 RUN git clone --depth 1 --branch ${ASDF_VERSION} https://github.com/asdf-vm/asdf.git ~/.asdf
