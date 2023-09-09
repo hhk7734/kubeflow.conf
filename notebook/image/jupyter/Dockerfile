@@ -1,23 +1,19 @@
-FROM localhost/base
+ARG BASE_IMG
+FROM ${BASE_IMG}
 
 ARG NODE_VERSION=18.17.1
-ARG PYTHON_VERSION=3.8.10
-
-USER ${NB_UID}
 
 SHELL ["/bin/zsh", "-c"]
 
+USER ${NB_UID}
+
+# Node.js
 RUN source $HOME/.zshrc \
     && asdf plugin add nodejs \
     && asdf install nodejs ${NODE_VERSION} \
     && asdf global nodejs ${NODE_VERSION} \
     && npm install -g yarn \
     && asdf reshim nodejs
-
-RUN source $HOME/.zshrc \
-    && asdf plugin add python \
-    && asdf install python ${PYTHON_VERSION} \
-    && asdf global python ${PYTHON_VERSION}
 
 # jupyter lab
 COPY --chown=${NB_USER}:users requirements.txt /tmp

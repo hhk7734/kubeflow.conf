@@ -40,4 +40,10 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 export FZF_DEFAULT_COMMAND='fd --type f --follow' # --hidden --exclude .git
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+if is_installed kubectl; then
+  source <(kubectl completion zsh)
+  alias k=kubectl
+  complete -F __start_kubectl k
+fi
+
 autoload -Uz compinit && compinit

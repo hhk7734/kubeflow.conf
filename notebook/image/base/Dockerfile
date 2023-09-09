@@ -6,6 +6,7 @@ ARG S6_ARCH="amd64"
 ARG S6_VERSION=v2.2.0.3
 ARG FZF_VERSION=0.42.0
 ARG ASDF_VERSION=v0.12.0
+ARG PYTHON_VERSION=3.10.13
 
 ENV NB_USER $NB_USER
 ENV NB_PASSWD $NB_PASSWD
@@ -88,3 +89,9 @@ RUN git clone --depth 1 --branch ${FZF_VERSION} https://github.com/junegunn/fzf.
 
 # ASDF
 RUN git clone --depth 1 --branch ${ASDF_VERSION} https://github.com/asdf-vm/asdf.git ~/.asdf
+
+# PYTHON
+RUN source $HOME/.zshrc \
+    && asdf plugin add python \
+    && asdf install python ${PYTHON_VERSION} \
+    && asdf global python ${PYTHON_VERSION}
