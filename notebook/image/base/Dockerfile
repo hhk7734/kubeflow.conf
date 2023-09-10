@@ -14,6 +14,11 @@ ENV NB_UID 1000
 ENV NB_PREFIX /
 ENV HOME /home/$NB_USER
 
+# NVIDIA
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -yq update \
     && apt-get -yq install --no-install-recommends \
